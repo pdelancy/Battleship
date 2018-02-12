@@ -1,4 +1,5 @@
 # Battleship
 
-Backend: battle-ship \n
+Backend: battle-ship 
+
 Frontend: battle-ship-app
