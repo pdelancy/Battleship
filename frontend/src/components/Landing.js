@@ -11,6 +11,8 @@ class Landing extends Component {
     }
   }
 
+// Checks if a game has been saved to the local storage within the last 2 minutes.
+// If so, the client updates the state of the server
   componentWillMount(){
     if(Date.now() - parseInt(localStorage.getItem("time")) < 120000){
       axios.post("http://localhost:8080/resumeGame", JSON.parse(localStorage.getItem("game")))

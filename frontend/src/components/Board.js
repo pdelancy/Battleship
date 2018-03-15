@@ -6,6 +6,7 @@ class Board extends Component {
     this.boatTypes = ["patrol", "cruiser", "submarine", "destroyer", "carrier"];
   }
 
+  //Tracks the location of the boats on the board
   trackBoats( boats ){
     let boatTracker = {};
     boats.map(boat => {

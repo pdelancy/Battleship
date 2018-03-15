@@ -18,6 +18,9 @@ class GameBoard extends Component {
     this.boatTypes = ["patrol", "cruiser", "submarine", "destroyer", "carrier"];
     this.interval = null;
   }
+
+  // Sets interval to poll the backend for the current game state and update the
+  // local storage
   componentWillMount(){
     this.interval = setInterval(function () {
       axios.get("http://localhost:8080/getStatus")
@@ -72,6 +75,7 @@ class GameBoard extends Component {
   })
 }
 
+// Generates arrays for the location of each boat and returns and object
 trackBoats( boats ){
   let boatTracker = {};
   boats.map(boat => {
@@ -88,12 +92,14 @@ trackBoats( boats ){
   return boatTracker;
 }
 
+// Used for rendering which boat is selected
   selectBoat( length ){
     this.setState({
       selectedBoatLength: length
     })
   }
 
+  // Marks the starting locations within the state
   startingLocation( row, column ){
     this.setState({
       startRow: row,
@@ -102,6 +108,7 @@ trackBoats( boats ){
     })
   }
 
+  // Logic for placing the new boats
   placeBoat( row, column ){
     let direction = row === this.state.startRow ? 0 : 1;
     let boat = this.state[this.boatTypes[this.state.selectedBoatLength - 1]].slice();
@@ -133,6 +140,7 @@ trackBoats( boats ){
     })
   }
 
+  // Checks if tile is currently highlighted
   isHighlighted( row, column ){
     return (
       ((row === this.state.startRow + this.state.selectedBoatLength - 1) && (column === this.state.startCol)) ||
@@ -142,6 +150,7 @@ trackBoats( boats ){
     )
   }
 
+  // Checks if there is a boat present at a tile
   boatPresent( row, column ){
     let boatName = this.boatTypes.map(boat => {
       let there = this.state[boat].reduce((found, coords) => {
@@ -153,6 +162,8 @@ trackBoats( boats ){
     return boatName ? boatName : "";
   }
 
+  // Checks if there is a boat present between start and end tiles within the state
+  // and another square
   boatBetween( row, column ){
     if(row === this.state.startRow || column === this.state.startCol){
       let direction = row === this.state.startRow ? 0 : 1;
