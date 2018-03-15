@@ -12,7 +12,7 @@ To launch the backend, navigate to  /backend , and run the following command:
 
 To launch the frontend, navigate to /frontend, and run the following commands:
 
-     run npm install
+     npm install
      npm start
 
 Below is a summary of the tech stack:
