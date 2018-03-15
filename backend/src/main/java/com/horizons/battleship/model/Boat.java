@@ -35,12 +35,10 @@ public class Boat {
     }
 
     public void hitBoat(){
-        System.out.println("IN HIT BOAT");
         if(getLength() > getHits()){
             hits++;
             sunk = hits == length  ? true : false;
         }
-        System.out.println("EXITING HIT BOAT");
     }
 
     public Integer getStartRow() {

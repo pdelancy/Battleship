@@ -12,11 +12,7 @@ class Landing extends Component {
   }
 
   componentWillMount(){
-    // localStorage.removeItem("game");
-    // localStorage.removeItem("id");
-    // localStorage.removeItem("time");
     if(Date.now() - parseInt(localStorage.getItem("time")) < 120000){
-      console.log('here');
       axios.post("http://localhost:8080/resumeGame", JSON.parse(localStorage.getItem("game")))
       .then((resp) => {
         let id = JSON.parse(localStorage.getItem("id"))
@@ -24,6 +20,7 @@ class Landing extends Component {
         else if(id === 2 && resp.data.games[0].player2ready) this.props.history.push(`/battleStation`);
         else this.props.history.push(`/setup`);
       })
+      .catch(e => console.log(e))
     } else {
       console.log("here");
 
@@ -40,17 +37,10 @@ class Landing extends Component {
           localStorage.removeItem("game");
           localStorage.removeItem("id");
           localStorage.removeItem("time");
-
-          if(response.data.games[0].player1){
-            this.setState({
-              hasPlayer1: true
-            })
-          };
-          if(response.data.games[0].player2){
-            this.setState({
-              hasPlayer2: true
-            })
-          }
+          this.setState({
+            hasPlayer1: !!response.data.games[0].player1,
+            hasPlayer2: !!response.data.games[0].player2
+          })
         }
       })
     }
