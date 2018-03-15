@@ -14,6 +14,8 @@ To launch the frontend, navigate to /frontend, and run the following commands:
 
      npm install
      npm start
+     
+If you want to play out a game on your local computer, you must navigate to localhost:3000 in two different browsers. The app extensively uses local storage, which is shared among browser windows.
 
 Below is a summary of the tech stack:
 
