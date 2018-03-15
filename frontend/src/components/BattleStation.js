@@ -15,6 +15,8 @@ class BattleStation extends Component {
     this.interval = null;
   }
 
+  // Sets interval to ping backend for game state and then updates game state
+  // saved to local storage
   componentWillMount() {
     this.interval = setInterval(() => {
       axios.get("http://localhost:8080/getStatus")
@@ -53,6 +55,7 @@ class BattleStation extends Component {
     }, 1000);
   }
 
+  // Sets a square in the state to mark it as the current targeted square
   setMove(row, column) {
     if(![0, -1].includes(this.state.radar.tiles[row][column])){
       this.setState({
