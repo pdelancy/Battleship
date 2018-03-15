@@ -201,7 +201,7 @@ public class GameController {
         try{
             List<Game> games = new ArrayList<>();
             List<Board> boards = game.getBoards();
-            if(boards != null) {
+            if(game.getStatus() == 0 && boards != null) {
                 for (Board board : boards) {
                     if (board.getType().equals("FLEET")) {
                         boolean boatsRemain = false;
@@ -273,14 +273,27 @@ public class GameController {
     public GameWrapper resumeGame(@RequestBody Game game){
         GameWrapper gameWrapper = new GameWrapper();
         try{
-            System.out.println("IN RESUME GAME");
-            System.out.println(game.isPlayer1());
-            for(Board b : game.getBoards()){
-                System.out.println(b.getBoats().size());
-            }
             List<Game> games = new ArrayList<>();
             games.add(game);
             this.game = game;
+            gameWrapper.setGames(games);
+            gameWrapper.setSuccess(true);
+        } catch ( Exception e ){
+            gameWrapper.setErrorMessage(e.getMessage());
+            gameWrapper.setSuccess(false);
+        }
+        return gameWrapper;
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/quitGame/{playerId}")
+    public GameWrapper quitGame(@PathVariable("playerId") Integer playerId){
+        System.out.println("IN QUIT GAME");
+        GameWrapper gameWrapper = new GameWrapper();
+        try{
+            List<Game> games = new ArrayList<>();
+            game.setStatus(playerId == 1 ? 2 : 1);
+            games.add(this.game);
             gameWrapper.setGames(games);
             gameWrapper.setSuccess(true);
         } catch ( Exception e ){

@@ -15,14 +15,15 @@ class BattleStation extends Component {
     this.interval = null;
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.interval = setInterval(() => {
       axios.get("http://localhost:8080/getStatus")
       .then(response => {
         console.log(response.data.games[0]);
         localStorage.setItem('game', JSON.stringify(response.data.games[0]));
         localStorage.setItem('time', Date.now());
-        if(response.data.games[0].status > 0){
+        if(response.data.games[0].status > 0 ){
+          console.log("HERE");
           localStorage.removeItem('game');
           clearInterval(this.interval);
           axios.get("http://localhost:8080/clearGame")
@@ -93,8 +94,17 @@ class BattleStation extends Component {
                     }
                   }}
                   > FIRE! </button>
+                  {/* <button className="quit-game"> Surrender </button> */}
               </div>
               : <p className="board-label">WAITING FOR OTHER PLAYER</p>}
+              <button className="quit-game" onClick={() => {
+                axios.get(`http://localhost:8080/quitGame/${localStorage.getItem("id")}`)
+                .then(() => {
+                  clearInterval(this.interval);
+                  // axios.get("http://localhost:8080/clearGame");
+                  this.props.history.push(`/loser`);
+                })
+              }}> Surrender </button>
             </div>
             <div>
               <div className="board-label">Radar</div>

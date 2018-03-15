@@ -22,7 +22,6 @@ class GameBoard extends Component {
     this.interval = setInterval(function () {
       axios.get("http://localhost:8080/getStatus")
       .then(response => {
-        console.log("Setting local storage");
         localStorage.setItem('game', JSON.stringify(response.data.games[0]));
         console.log(JSON.parse(localStorage.getItem("game")));
         localStorage.setItem('time', Date.now());
@@ -37,10 +36,6 @@ class GameBoard extends Component {
     let fleet;
     axios.get("http://localhost:8080/getStatus")
     .then(resp => {
-      console.log(resp.data.games[0]);
-      // if(!resp.data.games[0].player1){
-      //   this.props.history.push("/");
-      // }
       console.log(JSON.parse(localStorage.getItem("game")).boards.length);
       if(JSON.parse(localStorage.getItem("game")).boards.length === 0){
         axios.get("http://localhost:8080/setupGame")
@@ -52,7 +47,6 @@ class GameBoard extends Component {
               return myFleet
             } else {
               if(board.type === "FLEET" && board.player === parseInt(localStorage.getItem("id"))){
-                console.log("there");
                 return board;
               } else return myFleet ? myFleet : null;
             }
@@ -64,18 +58,14 @@ class GameBoard extends Component {
     } else {
       console.log(resp.data.games[0].boards);
       fleet = resp.data.games[0].boards.reduce((myFleet, board) => {
-        console.log(localStorage.getItem("id"), board.player);
-        console.log(localStorage.getItem("id") === board.player);
         if(myFleet){
           return myFleet;
         } else {
           if(board.type === "FLEET" && board.player === parseInt(localStorage.getItem("id"))){
-            console.log("here");
             return board;
           } else return board ? board : null;
         }
       }, null);
-      console.log(fleet);
       let boatTracker = this.trackBoats(fleet.boats);
       this.setState(Object.assign({}, boatTracker, {tiles: fleet.tiles}))
     }
@@ -99,7 +89,6 @@ trackBoats( boats ){
 }
 
   selectBoat( length ){
-    console.log("selected boat length", length)
     this.setState({
       selectedBoatLength: length
     })
@@ -119,29 +108,22 @@ trackBoats( boats ){
     let start;
     if(direction === 0){
       start = column > this.state.startCol ? this.state.startCol : column;
-      let end = column > this.state.startCol ? column : this.state.startCol;
       for( let i = 0; i < this.state.selectedBoatLength; i++){
         boat.push([row, start + i])
       }
     }
     if(direction === 1){
       start = row > this.state.startRow ? this.state.startRow : row;
-      let end = row > this.state.startRow ? row : this.state.startRow;
       for( let i = 0; i < this.state.selectedBoatLength; i++){
         boat.push([start + i, column])
       }
     }
-    console.log(boat);
-    console.log(localStorage.getItem("id"));
     axios.post(`http://localhost:8080/placeBoat/${localStorage.getItem("id")}`, {
       name: this.boatTypes[this.state.selectedBoatLength - 1],
       length: this.state.selectedBoatLength,
       startRow: direction ? start : this.state.startRow,
       startColumn: direction ? this.state.startCol : start,
       direction: direction
-    })
-    .then(response => {
-      console.log(response.data.boards)
     })
     this.setState({
       [this.boatTypes[this.state.selectedBoatLength - 1]]: boat,
@@ -152,7 +134,6 @@ trackBoats( boats ){
   }
 
   isHighlighted( row, column ){
-    // console.log(this.state.selectedBoatLength);
     return (
       ((row === this.state.startRow + this.state.selectedBoatLength - 1) && (column === this.state.startCol)) ||
       ((row === this.state.startRow - this.state.selectedBoatLength + 1) && (column===this.state.startCol)) ||
@@ -162,7 +143,6 @@ trackBoats( boats ){
   }
 
   boatPresent( row, column ){
-    console.log("calling boatPresent");
     let boatName = this.boatTypes.map(boat => {
       let there = this.state[boat].reduce((found, coords) => {
         return found ? found : coords[0] === row && coords[1] === column;
@@ -178,14 +158,12 @@ trackBoats( boats ){
       let direction = row === this.state.startRow ? 0 : 1;
       if(direction === 0){
         let start = column > this.state.startCol ? this.state.startCol : column;
-        let end = column > this.state.startCol ? column : this.state.startCol;
         for( let i = 0; i < this.state.selectedBoatLength; i++){
           if(this.boatPresent(row, start + i)) return true;
         }
       }
       if(direction === 1){
         let start = row > this.state.startRow ? this.state.startRow : row;
-        let end = row > this.state.startRow ? row : this.state.startRow;
         for( let i = 0; i < this.state.selectedBoatLength; i++){
           if(this.boatPresent(start + i, column)) return true;
         }
@@ -214,7 +192,6 @@ trackBoats( boats ){
             axios.get(`http://localhost:8080/randomBoard/${localStorage.getItem("id")}`)
             .then(response => {
               let boatTracker = this.trackBoats(response.data.boards[0].boats);
-              console.log(boatTracker);
               this.setState(Object.assign({}, boatTracker, {tiles: response.data.boards[0].tiles}))
             })
           }}>Randomly Place Boats</button>
@@ -226,7 +203,6 @@ trackBoats( boats ){
                 let startRow = this.state.startRow;
                 let startCol = this.state.startCol;
                 let highlighted = this.isHighlighted(r, c) && !this.boatBetween(r, c);
-                // console.log(highlighted)
                 let boatName = this.boatPresent(r, c);
                 return (
                   <div className={`board-tile ${r === startRow && c === startCol ? "selected" : ""} ${highlighted ? "highlighted" : ""} ${boatName}`}
@@ -244,7 +220,6 @@ trackBoats( boats ){
         <div>
           { allBoatsSelected ?
             <button className={`landing-page-button`} onClick={() => {
-              console.log(localStorage.getItem("id"));
                 clearInterval(this.interval);
                 axios.get(`http://localhost:8080/setReady/${localStorage.getItem("id")}`)
                 this.props.history.push(`/battleStation`)

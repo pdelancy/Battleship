@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import axios from "axios";
 import GameBoard from "./components/GameBoard";
 import Landing from "./components/Landing";
 import BattleStation from "./components/BattleStation";
