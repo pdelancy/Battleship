@@ -10,7 +10,9 @@ To launch the backend, navigate to  /backend , and run the following command:
 
     ./mvnw spring-boot:run
 
-To launch the frontend, navigate to /frontend, and run npm install, followed by npm start.
+To launch the frontend, navigate to /frontend, and run the following commands:
+
+     run npm install, followed by npm start.
 
 Below is a summary of the tech stack:
 
